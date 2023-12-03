@@ -1,6 +1,16 @@
 from fastapi import APIRouter
 
 router = APIRouter()
+class Goal:
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
+sample_goals = [
+    Goal(id=1, name="Learn Python"),
+    Goal(id=2, name="Exercise regularly"),
+    Goal(id=3, name="Read a book"),
+]
 
 @router.get("/goals", tags=["goals"])
 async def get_goals():
