@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-
+from .goal import GoalType, Goal
 router = APIRouter()
 
 @router.get("/goals", tags=["goals"])
@@ -11,11 +11,12 @@ async def get_goals():
 
 @router.get("/goals/{goal_id}", tags=["goals"])
 async def get_goal(goal_id: str):
-    # This endpoint should: 
-    # - take goal_id from the path of the URL
-    # - get goal with such id from datastore
-    # - return 200 status code on success with the goal
-    # - return 404 error status code when there is none
+    if goal_id in datastore:
+        goal = datastore[goal_id]
+        return goal
+    else:
+        # If goal_id not found, raise HTTPException with 404 status code
+        raise HTTPException(status_code=404, detail="Goal not found")
     return
 
 @router.get("/goals/{username}", tags=["goals"])
