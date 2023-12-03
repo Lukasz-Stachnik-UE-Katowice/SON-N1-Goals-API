@@ -1,16 +1,21 @@
 from fastapi import APIRouter
 
 router = APIRouter()
-class Goal:
-    def __init__(self, id, name):
-        self.id = id
-        self.name = name
+from enum import Enum
+from pydantic import BaseModel
+class GoalType(str, Enum):
+    personal = "personal"
+    work = "work"
+    health = "health"
 
-sample_goals = [
-    Goal(id=1, name="Learn Python"),
-    Goal(id=2, name="Exercise regularly"),
-    Goal(id=3, name="Read a book"),
-]
+class Goal(BaseModel):
+    id: str
+    type: GoalType
+    title: str
+    description: str
+    progress: float
+    archived: bool
+    completed: bool
 
 @router.get("/goals", tags=["goals"])
 async def get_goals():
