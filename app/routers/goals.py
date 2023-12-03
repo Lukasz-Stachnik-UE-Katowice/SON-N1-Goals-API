@@ -1,3 +1,4 @@
+from http.client import HTTPException
 from fastapi import APIRouter
 
 router = APIRouter()
@@ -45,13 +46,16 @@ async def update_goal(goal_id: str, goal):
     # - return 404 when there is no goal with such id in datastore
     return 
 
+goal_list = ["zarobić", "zbudować", "zjeść", "wypić"]
 @router.delete("/goals/{goal_id}", tags=["goals"])
 async def delete_goal(goal_id: str):
-    # This endpoint should:
-    # - delete goals with given ID from datastore
-    # - return 204 status code on success
-    # - return 404 when there is no goal with such id in datastore
-    return 
+    goal_deleted = delete_goal_from_datastore(goal_id)
+    if goal_deleted:   
+        return
+    else:
+        raise HTTPException(status_code=404, detail="Goal not found")
+def delete_goal_from_datastore(goal_id: str) -> bool:
+    return goal_list.remove(goal_id)
 
 @router.post("/goals/{goal_id}", tags=["goals"])
 async def post_progress_goal(goal_id: str, progress: float): 
