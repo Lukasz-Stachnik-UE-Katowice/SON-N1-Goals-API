@@ -3,6 +3,8 @@ from .goal import GoalType, Goal
 
 router = APIRouter()
 
+goals = []
+
 @router.get("/goals", tags=["goals"])
 async def get_goals():
     # This endpoint should:
@@ -12,6 +14,8 @@ async def get_goals():
 
 @router.get("/goals/{goal_id}", tags=["goals"])
 async def get_goal(goal_id: str):
+
+
     # This endpoint should: 
     # - take goal_id from the path of the URL
     # - get goal with such id from datastore
