@@ -57,7 +57,7 @@ async def post_goal(goal: Goal):
     
 
 @router.put("/goals/{goal_id}", tags=["goals"])
-async def update_goal(goal_id: str, goal): 
+async def update_goal(goal_id: str, goal : Goal): 
     if(goals.filter(lambda g: g.id == goal.id).update(goal)):
         return HttpResponse(status_code=200)
     return HttpException(status_code=404, detail="Goal not found")
