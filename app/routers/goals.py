@@ -1,15 +1,16 @@
 import requests
 from fastapi import APIRouter
-from  pydantic import BaseModel
+from  pydantic import BaseModel , Field
+from typing import ClassVar
 from starlette import status
 from starlette.responses import JSONResponse
 
 router = APIRouter()
 
 
-class GoalType:
-    case_habit = str
-    case_milestone = str
+class GoalType(BaseModel):
+    case_habit : ClassVar["habit"]
+    case_milestone : ClassVar["milestone"]
 
 
 class Goal(BaseModel):
@@ -21,7 +22,7 @@ class Goal(BaseModel):
         archived: bool
         completed: bool
 
-list_of_goals = [];
+list_of_goals = []
 
 
 @router.get("/goals", tags=["goals"])
@@ -84,7 +85,8 @@ async def post_progress_goal(goal_id: str, progress: float):
             elif i.progress + progress < 100:
                 i.progress += progress
                 return JSONResponse(status_code=status.HTTP_200_OK, content=i)
-    return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=goal_id)
+        else:
+            return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=goal_id)
     # This endpoint should:
     # - similarly like an update endpoint, take goal_id from path for the goal to search for in datastore
     # - update progress model in body
