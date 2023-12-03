@@ -2,6 +2,13 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
+class Goal(BaseModel):
+        id: int
+        name: "string"
+        completed: bool
+
+goals = []
+
 @router.get("/goals",status_code=status.HTTPS_200 ,tags=["goals"])
 async def get_goals() -> List[Goal]:
     # This endpoint should:
@@ -10,7 +17,8 @@ async def get_goals() -> List[Goal]:
     datastore = list()
     datastore.add("Zaoszczedz 5 zloty", "Pojedz na narty", "Jedz na wakacje", "Umyj auto")
     #tajny kod
-    return goals
+    datastore.add("Zrob kanapke bez ketchupu")
+    return []
 
 @router.get("/goals/{goal_id}", tags=["goals"])
 async def get_goal(goal_id: str):
