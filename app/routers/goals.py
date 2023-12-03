@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 
 router = APIRouter()
 from enum import Enum
@@ -44,16 +45,21 @@ async def get_user_goals(username: str):
     # - return 200 status code on success with the list of goals even if empty
     return [{"goal": "Learn Python"}]
 
-@router.post("/goals/{goal_id}", tags=["goals"])
+@router.post("/goals", tags=["goals"])
 async def post_goal(goal): 
     # This endpoint should:
     # - take goal_id from the URL path and get goal with such ID from datastore
     # - take goal passed in the request body, and change corresponding fields in the one got 
-    goals.filter(lambda g: g.id == goal.id).update(goal)
+    
+    if(goals.filter(lambda g: g.id == goal.id).update(goal)):
+        return JSONResponse(content = goal, status_code=200)
+    return JSONResponse(content = "ERROR", status_code = 404)
+
+ 
     # from datastore
     # - return 200 status code on success and the updated goal
     # - return 404 when there is no goal with such id in datastore
-    return ""
+    
 
 @router.put("/goals/{goal_id}", tags=["goals"])
 async def update_goal(goal_id: str, goal): 
