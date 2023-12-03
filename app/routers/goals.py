@@ -8,6 +8,7 @@ async def get_goals():
     # - get all goals from the datastore
     # - return 200 status code with all goals
     datastore = list()
+    datastore.add("Zaoszczedz 5 zloty", "Pojedz na narty", "Jedz na wakacje", "Umyj auto")
     return []
 
 @router.get("/goals/{goal_id}", tags=["goals"])
