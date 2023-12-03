@@ -2,13 +2,14 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
-@router.get("/goals", tags=["goals"])
+@router.get("/goals",status_code=status.HTTPS_200 ,tags=["goals"])
 async def get_goals():
     # This endpoint should:
     # - get all goals from the datastore
     # - return 200 status code with all goals
     datastore = list()
     datastore.add("Zaoszczedz 5 zloty", "Pojedz na narty", "Jedz na wakacje", "Umyj auto")
+    #tajny kod
     return []
 
 @router.get("/goals/{goal_id}", tags=["goals"])
