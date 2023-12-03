@@ -56,26 +56,24 @@ async def post_goal(goal):
 
 @router.put("/goals/{goal_id}", tags=["goals"])
 async def update_goal(goal_id: int, goal: Goal): 
-async def update_goal(goal_id: int, goal: Goal): 
     # This endpoint should:
 
     # - take goal_id from the URL path and get goal with such ID from datastore
-    goal = next((x for x in goals_store if x.id == goal_id), None)
+    g = next((x for x in goals_store if x.id == goal_id), None)
 
     # - return 404 when there is no goal with such id in datastore
-    if goal is None:
+    if g is None:
        raise HTTPException(status_code=404, detail="Item not found")
 
     # - take goal passed in the request body, and change corresponding fields (we only want it to change title, description and maybe something more in the future )
     # - update the goal in the datastore
     # - return 200 status code on success and the updated goal
     # - return 404 when there is no goal with such id in datastore
-    goal.id = goal_list
-    for i in range(len(goal_list)):
-        if goal_list[i].id == goal_id:
-            goal_list[i].title = goal.title
-            goal_list[i].description = goal.description
-            return goal_list[i]
+    for i in range(len(goals_store)):
+        if goals_store[i].id == goal_id:
+            goals_store[i].title = goal.title
+            goals_store[i].description = goal.description
+            return goals_store[i]
     return 
 
 @router.delete("/goals/{goal_id}", tags=["goals"])
