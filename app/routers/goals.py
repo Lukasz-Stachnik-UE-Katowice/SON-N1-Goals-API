@@ -1,23 +1,25 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from enum import Enum
 from typing import List
 
 router = APIRouter()
 
 
-# class GoalType(BaseModel):
-#     case habit
-#     case milestone
+class GoalType(str, Enum):
+    habit = "habit"
+    milestone = "milestone"
+
 class Goal(BaseModel):
     id: int
-    type: str
+    type: GoalType
     title: str
     description: str
     progress: float
     archived: bool
     completed: bool
 
-goals_store: List[Goal] = [Goal(id=1,type="habit", title="sleep", description="get rest", progress = 0.1, archived = False, completed = False)]
+goals_store: List[Goal] = [Goal(id=1,type=GoalType.habit, title="sleep", description="get rest", progress = 0.1, archived = False, completed = False)]
 
 @router.get("/goals", tags=["goals"])
 async def get_goals():
