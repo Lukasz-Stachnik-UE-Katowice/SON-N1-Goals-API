@@ -1,6 +1,28 @@
+import requests
 from fastapi import APIRouter
+from  pydantic import BaseModel
+from starlette import status
+from starlette.responses import JSONResponse
 
 router = APIRouter()
+
+
+class GoalType:
+    case_habit = str
+    case_milestone = str
+
+
+class Goal(BaseModel):
+        id: str
+        type: GoalType
+        title: str
+        description: str
+        progress: float
+        archived: bool
+        completed: bool
+
+list_of_goals = [];
+
 
 @router.get("/goals", tags=["goals"])
 async def get_goals():
@@ -36,7 +58,7 @@ async def post_goal(goal):
     return ""
 
 @router.put("/goals/{goal_id}", tags=["goals"])
-async def update_goal(goal_id: str, goal): 
+async def update_goal(goal_id: str, goal):
     # This endpoint should:
     # - take goal_id from the URL path and get goal with such ID from datastore
     # - take goal passed in the request body, and change corresponding fields (we only want it to change title, description and maybe something more in the future )
@@ -54,14 +76,21 @@ async def delete_goal(goal_id: str):
     return 
 
 @router.post("/goals/{goal_id}", tags=["goals"])
-async def post_progress_goal(goal_id: str, progress: float): 
+async def post_progress_goal(goal_id: str, progress: float):
+    for i in list_of_goals:
+        if i.id == goal_id:
+            if i.progress + progress > 100:
+                return JSONResponse(status_code=status.HTTP_406_NOT_ACCEPTABLE, content=goal_id)
+            elif i.progress + progress < 100:
+                i.progress += progress
+                return JSONResponse(status_code=status.HTTP_200_OK, content=i)
+    return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=goal_id)
     # This endpoint should:
     # - similarly like an update endpoint, take goal_id from path for the goal to search for in datastore
     # - update progress model in body
     # - update given goal with progress, and check if it's positive number, and not greater then 100 while it will represent percents
     # - return 200 on success and updated goal 
     # - return 404 when there is no goal with such id in datastore
-    return 
 
 @router.post("/goals/{goal_id}/archive", tags=["goals"])
 async def archive_goal(goal_id: str): 
