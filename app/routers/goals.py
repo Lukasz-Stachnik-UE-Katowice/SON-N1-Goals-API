@@ -8,7 +8,7 @@ router = APIRouter()
 #     case habit
 #     case milestone
 class Goal(BaseModel):
-    id: str
+    id: int
     type: str
     title: str
     description: str
@@ -21,7 +21,8 @@ async def get_goals():
     # This endpoint should:
     # - get all goals from the datastore
     # - return 200 status code with all goals
-    return []
+    goal_list = [Goal(id=1,type="habbit", title="sleep", description="get rest", progress= 1,archived = True, completed = True)]
+    return goal_list
 
 @router.get("/goals/{goal_id}", tags=["goals"])
 async def get_goal(goal_id: str):
