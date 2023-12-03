@@ -114,7 +114,8 @@ async def post_progress_goal(goal_id: str, progress: float):
             elif i.progress + progress < 100:
                 i.progress += progress
                 return JSONResponse(status_code=status.HTTP_200_OK, content=i)
-    return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=goal_id)
+        else:
+            return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=goal_id)
 
 @router.post("/goals/{goal_id}/archive", tags=["goals"])
 async def archive_goal(goal_id: str):
