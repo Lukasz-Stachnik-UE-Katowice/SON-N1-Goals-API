@@ -17,6 +17,9 @@ class Goal(BaseModel):
     archived: bool
     completed: bool
 
+# this is our "datastore" for now
+goals = []
+
 @router.get("/goals", tags=["goals"])
 async def get_goals():
     # This endpoint should:
@@ -41,11 +44,13 @@ async def get_user_goals(username: str):
     # - return 200 status code on success with the list of goals even if empty
     return [{"goal": "Learn Python"}]
 
-@router.post("/goals", tags=["goals"])
+@router.post("/goals/{goal_id}", tags=["goals"])
 async def post_goal(goal): 
     # This endpoint should:
     # - take goal_id from the URL path and get goal with such ID from datastore
-    # - take goal passed in the request body, and change corresponding fields in the one got from datastore
+    # - take goal passed in the request body, and change corresponding fields in the one got 
+    goals.filter(lambda g: g.id == goal.id).update(goal)
+    # from datastore
     # - return 200 status code on success and the updated goal
     # - return 404 when there is no goal with such id in datastore
     return ""
