@@ -18,7 +18,7 @@ async def get_goals() -> List[Goal]:
     datastore.add("Zaoszczedz 5 zloty", "Pojedz na narty", "Jedz na wakacje", "Umyj auto")
     #tajny kod
     datastore.add("Zrob kanapke bez ketchupu")
-    return []
+    return goals
 
 @router.get("/goals/{goal_id}", tags=["goals"])
 async def get_goal(goal_id: str):
