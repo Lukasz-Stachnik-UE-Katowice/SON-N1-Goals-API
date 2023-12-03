@@ -16,12 +16,15 @@ class Goal(BaseModel):
     archived: bool
     completed: bool
 
+goal_list = [Goal(id=1,type="habbit", title="sleep", description="get rest", progress= 1,archived = True, completed = True)]
+
+
 @router.get("/goals", tags=["goals"])
 async def get_goals():
     # This endpoint should:
     # - get all goals from the datastore
     # - return 200 status code with all goals
-    goal_list = [Goal(id=1,type="habbit", title="sleep", description="get rest", progress= 1,archived = True, completed = True)]
+    
     return goal_list
 
 @router.get("/goals/{goal_id}", tags=["goals"])
@@ -51,13 +54,19 @@ async def post_goal(goal):
     return ""
 
 @router.put("/goals/{goal_id}", tags=["goals"])
-async def update_goal(goal_id: str, goal): 
+async def update_goal(goal_id: int, goal: Goal): 
     # This endpoint should:
     # - take goal_id from the URL path and get goal with such ID from datastore
     # - take goal passed in the request body, and change corresponding fields (we only want it to change title, description and maybe something more in the future )
     # - update the goal in the datastore
     # - return 200 status code on success and the updated goal
     # - return 404 when there is no goal with such id in datastore
+    goal.id = goal_list
+    for i in range(len(goal_list)):
+        if goal_list[i].id == goal_id:
+            goal_list[i].title = goal.title
+            goal_list[i].description = goal.description
+            return goal_list[i]
     return 
 
 @router.delete("/goals/{goal_id}", tags=["goals"])
