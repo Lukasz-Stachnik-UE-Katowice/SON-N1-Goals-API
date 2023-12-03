@@ -1,6 +1,20 @@
 from fastapi import APIRouter
+from pydantic import BaseModel
 
 router = APIRouter()
+
+
+# class GoalType(BaseModel):
+#     case habit
+#     case milestone
+class Goal(BaseModel):
+    id: str
+    type: str
+    title: str
+    description: str
+    progress: float
+    archived: bool
+    completed: bool
 
 @router.get("/goals", tags=["goals"])
 async def get_goals():
