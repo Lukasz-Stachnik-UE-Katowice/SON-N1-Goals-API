@@ -1,31 +1,32 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from enum import Enum
+from typing import List
 
 router = APIRouter()
 
 
-# class GoalType(BaseModel):
-#     case habit
-#     case milestone
+class GoalType(str, Enum):
+    habit = "habit"
+    milestone = "milestone"
+
 class Goal(BaseModel):
     id: int
-    type: str
+    type: GoalType
     title: str
     description: str
     progress: float
     archived: bool
     completed: bool
 
-goal_list = [Goal(id=1,type="habbit", title="sleep", description="get rest", progress= 1,archived = True, completed = True)]
-
+goals_store: List[Goal] = [Goal(id=1,type=GoalType.habit, title="sleep", description="get rest", progress = 0.1, archived = False, completed = False)]
 
 @router.get("/goals", tags=["goals"])
 async def get_goals():
     # This endpoint should:
     # - get all goals from the datastore
     # - return 200 status code with all goals
-    
-    return goal_list
+    return goals_store
 
 @router.get("/goals/{goal_id}", tags=["goals"])
 async def get_goal(goal_id: str):
@@ -55,8 +56,16 @@ async def post_goal(goal):
 
 @router.put("/goals/{goal_id}", tags=["goals"])
 async def update_goal(goal_id: int, goal: Goal): 
+async def update_goal(goal_id: int, goal: Goal): 
     # This endpoint should:
+
     # - take goal_id from the URL path and get goal with such ID from datastore
+    goal = next((x for x in goals_store if x.id == goal_id), None)
+
+    # - return 404 when there is no goal with such id in datastore
+    if goal is None:
+       raise HTTPException(status_code=404, detail="Item not found")
+
     # - take goal passed in the request body, and change corresponding fields (we only want it to change title, description and maybe something more in the future )
     # - update the goal in the datastore
     # - return 200 status code on success and the updated goal
