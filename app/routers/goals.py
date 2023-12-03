@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse,HttpResponse, HttpException
 
 router = APIRouter()
 from enum import Enum
@@ -19,7 +19,7 @@ class Goal(BaseModel):
     completed: bool
 
 # this is our "datastore" for now
-goals = []
+goals : [Goal] = []
 
 @router.get("/goals", tags=["goals"])
 async def get_goals():
@@ -46,30 +46,21 @@ async def get_user_goals(username: str):
     return [{"goal": "Learn Python"}]
 
 @router.post("/goals", tags=["goals"])
-async def post_goal(goal): 
+async def post_goal(goal: Goal): 
     # This endpoint should:
     # - take goal_id from the URL path and get goal with such ID from datastore
-    # - take goal passed in the request body, and change corresponding fields in the one got 
-    
-    if(goals.filter(lambda g: g.id == goal.id).update(goal)):
-        return JSONResponse(content = goal, status_code=200)
-    return JSONResponse(content = "ERROR", status_code = 404)
-
- 
+    # - take goal passed in the request body, and change corresponding fields in the one got  
     # from datastore
     # - return 200 status code on success and the updated goal
     # - return 404 when there is no goal with such id in datastore
+    return
     
 
 @router.put("/goals/{goal_id}", tags=["goals"])
 async def update_goal(goal_id: str, goal): 
-    # This endpoint should:
-    # - take goal_id from the URL path and get goal with such ID from datastore
-    # - take goal passed in the request body, and change corresponding fields (we only want it to change title, description and maybe something more in the future )
-    # - update the goal in the datastore
-    # - return 200 status code on success and the updated goal
-    # - return 404 when there is no goal with such id in datastore
-    return 
+    if(goals.filter(lambda g: g.id == goal.id).update(goal)):
+        return HttpResponse(status_code=200)
+    return HttpException(status_code=404, detail="Goal not found")
 
 @router.delete("/goals/{goal_id}", tags=["goals"])
 async def delete_goal(goal_id: str):
