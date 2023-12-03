@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from enum import Enum
 from typing import List
+from starlette import status
+from starlette.responses import JSONResponse
 
 router = APIRouter()
 
@@ -105,14 +107,14 @@ async def delete_goal(goal_id: str):
 
 @router.post("/goals/{goal_id}", tags=["goals"])
 async def post_progress_goal(goal_id: str, progress: float):
-    # This endpoint should:
-    # - similarly like an update endpoint, take goal_id from path for the goal to search for in datastore
-    # - update progress model in body
-    # - update given goal with progress, and check if it's positive number, and not greater then 100 while it will represent percents
-    # - return 200 on success and updated goal
-    # - return 404 when there is no goal with such id in datastore
-    return
-
+    for i in goals_store:
+        if i.id == goal_id:
+            if i.progress + progress > 100:
+                return JSONResponse(status_code=status.HTTP_406_NOT_ACCEPTABLE, content=goal_id)
+            elif i.progress + progress < 100:
+                i.progress += progress
+                return JSONResponse(status_code=status.HTTP_200_OK, content=i)
+    return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=goal_id)
 
 @router.post("/goals/{goal_id}/archive", tags=["goals"])
 async def archive_goal(goal_id: str):
