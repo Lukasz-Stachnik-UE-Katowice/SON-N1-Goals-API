@@ -9,4 +9,3 @@ app.include_router(goals.router)
 async def root():
     return {"message": "Hello Students!"}
 
-lista1 =list()

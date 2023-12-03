@@ -7,6 +7,7 @@ async def get_goals():
     # This endpoint should:
     # - get all goals from the datastore
     # - return 200 status code with all goals
+    datastore = list()
     return []
 
 @router.get("/goals/{goal_id}", tags=["goals"])
