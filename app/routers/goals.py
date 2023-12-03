@@ -48,15 +48,11 @@ async def update_goal(goal_id: str, goal):
 
 @router.delete("/goals/{goal_id}", tags=["goals"])
 async def delete_goal(goal_id: str):
-    # This endpoint should:
-    # - delete goals with given ID from datastore
     goal_deleted = delete_goal_from_datastore(goal_id)
     if goal_deleted:   
         return
     else:
         raise HTTPException(status_code=404, detail="Goal not found")
-    # - return 204 status code on success
-    # - return 404 when there is no goal with such id in datastore
 def delete_goal_from_datastore(goal_id: str) -> bool:
     return True
 
