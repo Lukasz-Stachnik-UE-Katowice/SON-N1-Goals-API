@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse,HttpResponse, HttpException
+from pydantic import BaseModel
 
 router = APIRouter()
 from enum import Enum
-from pydantic import BaseModel
 class GoalType(str, Enum):
     personal = "personal"
     work = "work"
@@ -57,9 +57,11 @@ async def post_goal(goal: Goal):
     
 
 @router.put("/goals/{goal_id}", tags=["goals"])
-async def update_goal(goal_id: str, goal): 
-    if(goals.filter(lambda g: g.id == goal.id).update(goal)):
-        return HttpResponse(status_code=200)
+async def update_goal(goal_id: str, goal : Goal) -> Goal :
+    goalToUpdate = goals.filter(lambda g: g.id == goal.id)
+    if(goalToUpdate.exists()):
+        goalToUpdate = goalToUpdate.update(goal)
+        return HttpResponse(goalToUpdate ,status_code=200 )
     return HttpException(status_code=404, detail="Goal not found")
 
 @router.delete("/goals/{goal_id}", tags=["goals"])
