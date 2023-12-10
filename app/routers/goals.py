@@ -6,8 +6,6 @@ router = APIRouter()
 
 class Goal(BaseModel):
         id: int
-        description: str
-        progress: float
         name: str
         completed: bool
 
