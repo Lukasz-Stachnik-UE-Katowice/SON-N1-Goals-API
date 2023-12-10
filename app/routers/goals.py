@@ -124,14 +124,18 @@ async def post_progress_goal(goal_id: str, progress: float):
     return goal
 
 @router.post("/goals/{goal_id}/archive", tags=["goals"])
-async def archive_goal(goal_id: str):
-    # This endpoint should:
-    # - similarly like an update endpoint, take goal_id from path for the goal to search for in datastore
-    # - change "archived" property of goal from false to true or vice versa
-    # - return 200 on success and archived goal
-    # - return 404 when there is no goal with such id in datastore
-    return
+async def archive_goal(goal_id: str) -> Goal:
 
+    goal = get_goal(goal_id)
+
+    if goal is None:
+        return None
+    
+    goal.archived = not goal.archived
+    
+    update_goal(goal_id, goal)
+    
+    return goal
 
 @router.post("/goals/{goal_id}/complete", tags=["goals"])
 async def complete_goal(goal_id: str):
@@ -140,8 +144,4 @@ async def complete_goal(goal_id: str):
     # - change "completed" property of goal from false to true or vice versa
     # - return 200 on success and archived goal
     # - return 404 when there is no goal with such id in datastore
-<<<<<<< HEAD
     return
-=======
-    return 
->>>>>>> 64e4f35 (fix: added return goal statement)
