@@ -1,8 +1,27 @@
 from typing import List
 
 from fastapi import APIRouter
+from fastapi.responses import JSONResponse,HttpResponse, HttpException
+from pydantic import BaseModel
 
 router = APIRouter()
+from enum import Enum
+class GoalType(str, Enum):
+    personal = "personal"
+    work = "work"
+    health = "health"
+
+class Goal(BaseModel):
+    id: str
+    type: GoalType
+    title: str
+    description: str
+    progress: float
+    archived: bool
+    completed: bool
+
+# this is our "datastore" for now
+goals : [Goal] = []
 
 class Goal(BaseModel):
         id: int
@@ -43,23 +62,23 @@ async def get_user_goals(username: str):
     return [{"goal": "Learn Python"}]
 
 @router.post("/goals", tags=["goals"])
-async def post_goal(goal): 
+async def post_goal(goal: Goal): 
     # This endpoint should:
     # - take goal_id from the URL path and get goal with such ID from datastore
-    # - take goal passed in the request body, and change corresponding fields in the one got from datastore
+    # - take goal passed in the request body, and change corresponding fields in the one got  
+    # from datastore
     # - return 200 status code on success and the updated goal
     # - return 404 when there is no goal with such id in datastore
-    return ""
+    return
+    
 
 @router.put("/goals/{goal_id}", tags=["goals"])
-async def update_goal(goal_id: str, goal): 
-    # This endpoint should:
-    # - take goal_id from the URL path and get goal with such ID from datastore
-    # - take goal passed in the request body, and change corresponding fields (we only want it to change title, description and maybe something more in the future )
-    # - update the goal in the datastore
-    # - return 200 status code on success and the updated goal
-    # - return 404 when there is no goal with such id in datastore
-    return 
+async def update_goal(goal_id: str, goal : Goal) -> Goal :
+    goalToUpdate = goals.filter(lambda g: g.id == goal.id)
+    if(goalToUpdate.exists()):
+        goalToUpdate = goalToUpdate.update(goal)
+        return HttpResponse(goalToUpdate ,status_code=200 )
+    return HttpException(status_code=404, detail="Goal not found")
 
 @router.delete("/goals/{goal_id}", tags=["goals"])
 async def delete_goal(goal_id: str):
