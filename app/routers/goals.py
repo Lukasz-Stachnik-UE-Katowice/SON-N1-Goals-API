@@ -71,11 +71,6 @@ async def post_goal(goal: Goal):
     return
 
 
-from fastapi import HTTPException
-
-from fastapi import HTTPException
-
-
 @router.put("/goals/{goal_id}", tags=["goals"])
 async def update_goal(goal_id: int, updated_goal: Goal)-> Goal:
     index = next((i for i, g in enumerate(goals) if g["id"] == goal_id), None)
