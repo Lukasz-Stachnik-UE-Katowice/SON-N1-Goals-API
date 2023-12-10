@@ -1,13 +1,29 @@
+from typing import List
+
 from fastapi import APIRouter
 
 router = APIRouter()
 
-@router.get("/goals", tags=["goals"])
-async def get_goals():
+class Goal(BaseModel):
+        id: int
+        name: str
+        completed: bool
+
+
+Goal1 = Goal(id=1, name="Zaoszczedz 5 zloty", completed=False)
+Goal2 = Goal(id=2, name="Pojedz na narty", completed=False)
+Goal3 = Goal(id=3, name="Jedz na wakacje", completed=False)
+Goal4 = Goal(id=4, name="Umyj auto", completed=False)
+Goal5 = Goal(id=5, name="Zrob kanapke bez ketchupu", completed=False)
+goals = [Goal1, Goal2, Goal3, Goal4, Goal5]
+
+@router.get("/goals",status_code=status.HTTPS_200 ,tags=["goals"])
+async def get_goals() -> List[Goal]:
     # This endpoint should:
     # - get all goals from the datastore
     # - return 200 status code with all goals
-    return []
+    
+    return goals
 
 @router.get("/goals/{goal_id}", tags=["goals"])
 async def get_goal(goal_id: str):
