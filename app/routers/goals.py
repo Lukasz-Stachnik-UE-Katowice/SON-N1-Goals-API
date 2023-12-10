@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from enum import Enum
 from typing import List
-
 router = APIRouter()
 
 
@@ -33,6 +32,10 @@ goals_store: List[Goal] = [
     )
 ]
 
+goals_list = [
+    {"id": "1", "title": "Example Goal 1", "completed": False, "progress": 0},
+    {"id": "2", "title": "Example Goal 2", "completed": False, "progress": 0},
+]
 
 @router.get("/goals", tags=["goals"])
 async def get_goals():
@@ -104,15 +107,21 @@ async def delete_goal(goal_id: str):
 
 
 @router.post("/goals/{goal_id}", tags=["goals"])
-async def post_progress_goal(goal_id: str, progress: float):
-    # This endpoint should:
-    # - similarly like an update endpoint, take goal_id from path for the goal to search for in datastore
-    # - update progress model in body
-    # - update given goal with progress, and check if it's positive number, and not greater then 100 while it will represent percents
-    # - return 200 on success and updated goal
-    # - return 404 when there is no goal with such id in datastore
-    return
+async def post_progress_goal(goal_id: str, progress: float): 
+    goal_to_update = None
+    for goal in goals_list:
+        if goal["id"] == goal_id:
+            goal["progress"] = progress
+            goal_to_update = goal
+            break
 
+    if goal_to_update is None:
+        raise HTTPException(status_code=404, detail=f"Goal with ID {goal_id} not found")
+
+    if not (0 <= progress <= 100):
+        raise HTTPException(status_code=422, detail="Progress should be a positive number not greater than 100")
+    
+    return goal
 
 @router.post("/goals/{goal_id}/archive", tags=["goals"])
 async def archive_goal(goal_id: str):
@@ -131,4 +140,8 @@ async def complete_goal(goal_id: str):
     # - change "completed" property of goal from false to true or vice versa
     # - return 200 on success and archived goal
     # - return 404 when there is no goal with such id in datastore
+<<<<<<< HEAD
     return
+=======
+    return 
+>>>>>>> 64e4f35 (fix: added return goal statement)
