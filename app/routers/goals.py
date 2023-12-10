@@ -83,7 +83,7 @@ async def post_progress_goal(goal_id: str, progress: float):
     if not (0 <= progress <= 100):
         raise HTTPException(status_code=422, detail="Progress should be a positive number not greater than 100")
     
-    return {"message": "Goal updated successfully", "goal": goal}
+    return goal
 
 @router.post("/goals/{goal_id}/archive", tags=["goals"])
 async def archive_goal(goal_id: str): 
