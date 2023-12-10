@@ -1,9 +1,22 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from .goal import GoalType, Goal
+from pydantic import BaseModel
 
 router = APIRouter()
 
-goals = []
+class Goal(BaseModel):
+    id: str
+    name: str
+    number: int
+    description: str
+
+    # def __init__(self, id, name, number,description):
+    #     self.id = id
+    #     self.name = name
+    #     self.number = number
+    #     self.description = description
+    
+goals = [Goal("1", "Name",10, "Desc")]
 
 @router.get("/goals", tags=["goals"])
 async def get_goals():
@@ -12,16 +25,13 @@ async def get_goals():
     # - return 200 status code with all goals
     return []
 
-@router.get("/goals/{goal_id}", tags=["goals"])
-async def get_goal(goal_id: str):
 
-
-    # This endpoint should: 
-    # - take goal_id from the path of the URL
-    # - get goal with such id from datastore
-    # - return 200 status code on success with the goal
-    # - return 404 error status code when there is none
-    return
+async def get_goal(goal_id: int) -> Goal:
+    for cel in goals:
+        if cel.id == goal_id:
+            return cel
+    raise HTTPException(status_code=404, detail="Cel nie został znaleziony")
+    
 
 @router.get("/goals/{username}", tags=["goals"])
 async def get_user_goals(username: str): 
@@ -73,7 +83,7 @@ async def archive_goal(goal_id: str):
     # This endpoint should:
     # - similarly like an update endpoint, take goal_id from path for the goal to search for in datastore
     # - change "archived" property of goal from false to true or vice versa
-    # - return 200 on success and archived goal 
+    # - return 200 on success and aarchived goal 
     # - return 404 when there is no goal with such id in datastore
     return 
 
