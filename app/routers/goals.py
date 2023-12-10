@@ -55,7 +55,7 @@ async def post_goal(goal):
     return ""
 
 @router.put("/goals/{goal_id}", tags=["goals"])
-async def update_goal(goal_id: int, goal: Goal): 
+async def update_goal(goal_id: int, goal: Goal) -> Goal: 
     # This endpoint should:
 
     # - take goal_id from the URL path and get goal with such ID from datastore
