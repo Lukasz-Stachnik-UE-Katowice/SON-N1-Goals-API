@@ -35,6 +35,10 @@ goals_store: List[Goal] = [
     )
 ]
 
+goals_list = [
+    {"id": "1", "title": "Example Goal 1", "completed": False, "progress": 0},
+    {"id": "2", "title": "Example Goal 2", "completed": False, "progress": 0},
+]
 
 @router.get("/goals", tags=["goals"])
 async def get_goals():
