@@ -1,5 +1,5 @@
-from http.client import HTTPException
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
+
 
 router = APIRouter()
 
@@ -50,12 +50,18 @@ goal_list = ["zarobić", "zbudować", "zjeść", "wypić"]
 @router.delete("/goals/{goal_id}", tags=["goals"])
 async def delete_goal(goal_id: str):
     goal_deleted = delete_goal_from_datastore(goal_id)
-    if goal_deleted:   
-        return
+    if goal_deleted:
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
     else:
-        raise HTTPException(status_code=404, detail="Goal not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Goal not found")
+
 def delete_goal_from_datastore(goal_id: str) -> bool:
-    return goal_list.remove(goal_id)
+
+    if goal_id in goal_list:
+        goal_list.remove(goal_id)
+        return True
+    else:
+        return False
 
 @router.post("/goals/{goal_id}", tags=["goals"])
 async def post_progress_goal(goal_id: str, progress: float): 
